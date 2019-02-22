@@ -363,8 +363,6 @@ int main(int argc, char *args[]){
   //we pass a pointer to the node since we want to
   //modify what node we are using (ie pointing to)
 
-  clock_t end = clock();
-  printf("Time: %lu \n", end - begin);
   //printf("Particles: \n");
   //for(int i=0; i<N; i++){
   //  printf("particle %d: m = %lf, (%lf,%lf) \n", i, arr[i][MASS],
@@ -433,7 +431,13 @@ fclose(fout);
     free(arr[i]);
   }
   free(arr);
+  clock_t end = clock();
+  double time_spent = (double)(end - begin)/CLOCKS_PER_SEC;
 
+  FILE *file3;
+  file3 = fopen("time.txt" , "a+");
+  fprintf(file3 , "%lf \n" , time_spent );
+  fclose(file3);
 
   return 0;
 }
