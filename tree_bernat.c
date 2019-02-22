@@ -257,7 +257,7 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
     /*calculate distance from prt i to cm */
     double x_direction = pos_x - (*node)->cm_x;
     double y_direction = pos_y - (*node)->cm_y;
-    double dist_to_node = sqrt(x_direction*x_direction - y_direction*y_direction);
+    double dist_to_node = sqrt(x_direction*x_direction + y_direction*y_direction);
     //THIS NEEDS TO GO HUGE PERFOMANCE HIT PROBABLY
     //FIND THE PARTICLE AND DELETE IT
     double tol= 1.0e-10; //
@@ -277,7 +277,7 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
     //otherwise we go deeper
     double x_direction = pos_x - (*node)->cm_x;
     double y_direction = pos_y - (*node)->cm_y;
-    double dist_to_node = sqrt(x_direction*x_direction - y_direction*y_direction);
+    double dist_to_node = sqrt(x_direction*x_direction + y_direction*y_direction);
     double theta = (*node)->width/dist_to_node;
 
     if(theta< theta_max){
@@ -291,8 +291,8 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
       double denominator = pow(sqrt(x_direction*x_direction +
       y_direction*y_direction)+epsilon_0,3);
       //add to the global varaibles
-      total_acc_x += -G*x_direction/denominator;
-      total_acc_y += -G*y_direction/denominator;
+      total_acc_x += -G* (*node)->tot_mass*x_direction/denominator;
+      total_acc_y += -G* (*node)->tot_mass*y_direction/denominator;
       return;
     }else{
       //printf("Run recursively \n");
@@ -309,7 +309,7 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
   }
 }
 
-int main(int argc, char const *args[]){
+int main(int argc, char *args[]){
 
   if (argc!=7){
     printf("Invalid number of arguments \n");
