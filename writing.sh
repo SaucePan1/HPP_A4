@@ -64,7 +64,7 @@ do
 	((counter++))
 done
 printf '\n \n \n'
-echo "Result with O2 flag -------------------------------"
+echo "Result with O3 flag -------------------------------"
 echo "<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 printf '\n \n \n'
 python3 print_mean_std.py
