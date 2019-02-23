@@ -65,7 +65,7 @@ do
 	((counter++))
 done
 printf '\n \n \n'
-echo "Result with O2 flag -------------------------------"
+echo "Result with O3 flag -------------------------------"
 echo "<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 printf '\n \n \n'
 python3 print_mean_std.py
@@ -109,6 +109,25 @@ cd compare_gal_files
 ./compare "$N" result.gal "$compare_file"
 cd ..
 make clean
+
+make generate_with_ffast_msse4 argument="$script"
+counter=1
+while [ $counter -le 10 ]
+do
+	./ffast_native "$N" "$file" "$n_steps" "$delta" "$theta" "$graphics"
+	((counter++))
+done
+printf '\n \n \n'
+echo "Result with -O3 -ffast-math -msse4.2 flag -------------------------------"
+echo "<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+printf '\n \n \n'
+python3 print_mean_std.py
+mv result.gal ./compare_gal_files
+cd compare_gal_files
+./compare "$N" result.gal "$compare_file"
+cd ..
+make clean
+
 
 rm print_mean_std.py
 rm makefile
