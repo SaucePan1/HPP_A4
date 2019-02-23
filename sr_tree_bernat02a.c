@@ -406,6 +406,20 @@ int main(int argc, char *args[]){
 
   }
 
+  //Read the file with initial conditions
+  FILE *file;
+  file = fopen(file_name , "rb");
+  /*maybe in this case we could allocate memory for this
+  matrix statically*/
+  double *mass = (double **)malloc(N*sizeof(double));
+
+  for (int i = 0 ; i<(N) ; i++){
+    double m;
+    fread(&m , sizeof(double) , 1 ,file);
+    mass[i] = m;
+  }
+  fclose(file);
+
 
   FILE * fout = fopen("result.gal", "w+");          //check succesful creation/opening of results file
     if (fout == NULL){
@@ -419,13 +433,12 @@ for (int j=0; j<N; j++){
   double x , y , vx , vy , mass , bright;
   x = (double)arr[i][0];
   y = (double)arr[i][1];
-  mass = (double)arr[i][2];
   vx = (double)arr[i][3];
   vy = (double)arr[i][4];
   bright = (double)arr[i][5];
   fwrite(&x, sizeof(double), 1, fout);
   fwrite(&y,  sizeof(double), 1, fout);
-  fwrite(&mass ,  sizeof(double), 1, fout);
+  fwrite(&mass[i] ,  sizeof(double), 1, fout);
   fwrite(&vx , sizeof(double), 1, fout);
   fwrite(&vy,  sizeof(double), 1, fout);
   fwrite(& bright,  sizeof(double), 1, fout);
