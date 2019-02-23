@@ -267,10 +267,10 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
     }
     //printf("Particle one to one on external node \n");
     //calculate force
-    double denominator = pow(sqrt(x_direction*x_direction +
-    y_direction*y_direction)+epsilon_0,3);
-    total_acc_x += -G* (*node)->tot_mass * x_direction/denominator;
-    total_acc_y += -G* (*node)->tot_mass * y_direction/denominator;
+    double denominator = (dist_to_node + epsilon_0)*(dist_to_node + epsilon_0)
+    *(dist_to_node + epsilon_0);
+    total_acc_x += G* (*node)->tot_mass * x_direction/denominator;
+    total_acc_y += G* (*node)->tot_mass * y_direction/denominator;
     return;
   }else{
     //We are an internal node. Check if w/d < theta. If it is we calculate force,
@@ -288,11 +288,11 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
       //calculating forces over!!
 
       //treat everything as center of mass and calculate acceleration
-      double denominator = pow(sqrt(x_direction*x_direction +
-      y_direction*y_direction)+epsilon_0,3);
+      double denominator = (dist_to_node + epsilon_0)*(dist_to_node + epsilon_0)
+      *(dist_to_node + epsilon_0);
       //add to the global varaibles
-      total_acc_x += -G* (*node)->tot_mass*x_direction/denominator;
-      total_acc_y += -G* (*node)->tot_mass*y_direction/denominator;
+      total_acc_x += G* (*node)->tot_mass*x_direction/denominator;
+      total_acc_y += G* (*node)->tot_mass*y_direction/denominator;
       return;
     }else{
       //printf("Run recursively \n");
@@ -324,7 +324,7 @@ int main(int argc, char *args[]){
   character to double, maybe a single cast would suffice */
   const double delta_t = atof(args[4]);
   const double theta_max = atof(args[5]);
-  const double G = 100/(double)N;
+  const double G = -100/(double)N;
   //Read the file with initial conditions
   FILE *file;
   file = fopen(file_name , "rb");
@@ -441,4 +441,3 @@ fclose(fout);
 
   return 0;
 }
-
