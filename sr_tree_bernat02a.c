@@ -8,9 +8,9 @@
 #define POS_Y 1
 #define MASS 2
 
-double total_acc_x =0;
-double total_acc_y =0;
-const double epsilon_0 = 0.001;
+float total_acc_x =0;
+float total_acc_y =0;
+const float epsilon_0 = 0.001;
 
 
 //declare node structure (X)
@@ -18,12 +18,12 @@ const double epsilon_0 = 0.001;
 typedef struct tree_node{
   int depth;
   int body_id;
-  double x_lim; //x division (middle point in x)
-  double y_lim; // y division (middle point in y)
-  double width; //width of the box
-  double cm_x; // = 0, this points to 0 and
-  double cm_y; //center of mas s of the quadrant
-  double tot_mass; // = 0, total mass of the quadrant
+  float x_lim; //x division (middle point in x)
+  float y_lim; // y division (middle point in y)
+  float width; //width of the box
+  float cm_x; // = 0, this points to 0 and
+  float cm_y; //center of mas s of the quadrant
+  float tot_mass; // = 0, total mass of the quadrant
   struct tree_node *left_down; //Q3 child
   struct tree_node *left_up; //Q2 child
   struct tree_node *right_down; //Q4 child
@@ -53,7 +53,7 @@ void print_qtree(node_t* node){
   if (node->right_down != NULL) print_qtree(node->right_down);
   return;
 }
-void create_children(node_t* node, double * pow_2){
+void create_children(node_t* node, float * pow_2){
 
   if(node->right_up != NULL){printf("L178, create_children. Something went wrong RU children already exist"); return;}
   //create right up
@@ -127,7 +127,7 @@ void create_children(node_t* node, double * pow_2){
 
 }
 //modify what node we are using (ie pointing to)
-void insert(node_t **node, double x_pos, double y_pos, double mass, double* pow_2, int id){
+void insert(node_t **node, float x_pos, float y_pos, float mass, float* pow_2, int id){
   // inserts given bodyin tree, creating new nodes if necessary such that
   //every external node (leaf) contains only one body.
   //each node represents a quadrant and contains coordinates of
@@ -152,7 +152,7 @@ void insert(node_t **node, double x_pos, double y_pos, double mass, double* pow_
      if((*node)->right_up != NULL){
       //Node is internal (not a leaf)
       //UPDATE cm and MASS
-      double cm_mass = (*node)->tot_mass;
+      float cm_mass = (*node)->tot_mass;
       //update center of mass new_cm = (old_mass*old_cm + pos_new_particle*mass_new_particle)/(new total mass)
       (*node)->tot_mass+=mass;
       //we can save operations in here by declaring new varaibles
@@ -190,7 +190,7 @@ void insert(node_t **node, double x_pos, double y_pos, double mass, double* pow_
       //print_qtree((*node));
       //insert particle that was occupying the leaf, it will go to appropiate
       //quadrant
-      double mass_in_node = (*node)->tot_mass;
+      float mass_in_node = (*node)->tot_mass;
       //set the mass to 0 since we remove a particle from the node
       (*node)->tot_mass = 0;
       //save position in the tree
@@ -235,7 +235,7 @@ void delete_tree(node_t** node){
   return;
 }
 
-void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_max, double G){
+void get_acc_on_body(float pos_x, float pos_y, node_t ** node, float theta_max, float G){
   /* this function transverses the tree from the given node and adds the resulting
   accelerations over given particle to two global variables total_acc_x and total_acc_x
   We follow the following algorithm:
@@ -255,30 +255,31 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
     to add it to the sum of accelerations
     */
     /*calculate distance from prt i to cm */
-    double x_direction = pos_x - (*node)->cm_x;
-    double y_direction = pos_y - (*node)->cm_y;
-    double dist_to_node = sqrtf(x_direction*x_direction + y_direction*y_direction);
+    float x_direction = pos_x - (*node)->cm_x;
+    float y_direction = pos_y - (*node)->cm_y;
+    float dist_to_node = sqrtf(x_direction*x_direction + y_direction*y_direction);
     //THIS NEEDS TO GO HUGE PERFOMANCE HIT PROBABLY
     //FIND THE PARTICLE AND DELETE IT
-    double tol= 1.0e-10; //
+    float tol= 1.0e-10; //
     if( dist_to_node < tol){
       //printf("The particle is the same, or the node is empty, so we skip it\n");
       return;
     }
     //printf("Particle one to one on external node \n");
     //calculate force
-    double denominator = (dist_to_node + epsilon_0)*(dist_to_node + epsilon_0)
+    float denominator = (dist_to_node + epsilon_0)*(dist_to_node + epsilon_0)
     *(dist_to_node + epsilon_0);
+
     total_acc_x += G* (*node)->tot_mass * x_direction/denominator;
     total_acc_y += G* (*node)->tot_mass * y_direction/denominator;
     return;
   }else{
     //We are an internal node. Check if w/d < theta. If it is we calculate force,
     //otherwise we go deeper
-    double x_direction = pos_x - (*node)->cm_x;
-    double y_direction = pos_y - (*node)->cm_y;
-    double dist_to_node = sqrtf(x_direction*x_direction + y_direction*y_direction);
-    double theta = (*node)->width/dist_to_node;
+    float x_direction = pos_x - (*node)->cm_x;
+    float y_direction = pos_y - (*node)->cm_y;
+    float dist_to_node = sqrtf(x_direction*x_direction + y_direction*y_direction);
+    float theta = (*node)->width/dist_to_node;
 
     if(theta< theta_max){
       //printf("Theta less than theta max -----------$$$$$$$$$$$$$$$$$$$$$$$--- \n");
@@ -288,9 +289,10 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
       //calculating forces over!!
 
       //treat everything as center of mass and calculate acceleration
-      double denominator = (dist_to_node + epsilon_0)*(dist_to_node + epsilon_0)
+      float denominator = (dist_to_node + epsilon_0)*(dist_to_node + epsilon_0)
       *(dist_to_node + epsilon_0);
       //add to the global varaibles
+      //G_times_mass = G* (*node)->tot_mass;
       total_acc_x += G* (*node)->tot_mass*x_direction/denominator;
       total_acc_y += G* (*node)->tot_mass*y_direction/denominator;
       return;
@@ -322,17 +324,17 @@ int main(int argc, char *args[]){
   const int n_steps = atoi(args[3]);
   /*not sure if this is the correct way of converting from
   character to double, maybe a single cast would suffice */
-  const double delta_t = atof(args[4]);
-  const double theta_max = atof(args[5]);
-  const double G = -100/(double)N;
+  const float delta_t = atof(args[4]);
+  const float theta_max = atof(args[5]);
+  const float G = -100/(float)N;
   //Read the file with initial conditions
   FILE *file;
   file = fopen(file_name , "rb");
   /*maybe in this case we could allocate memory for this
   matrix statically*/
-  double **arr = (double **)malloc(N*sizeof(double*));
+  float **arr = (float **)malloc(N*sizeof(float *));
   for (int i = 0 ; i<N ; i++){
-    arr[i] = (double*)malloc(6 * sizeof(double));
+    arr[i] = (float*)malloc(6 * sizeof(float));
   }
 
   for (int i = 0 ; i<(N) ; i++){
@@ -343,17 +345,17 @@ int main(int argc, char *args[]){
     fread(&vx , sizeof(double) , 1 ,file);
     fread(&vy , sizeof(double) , 1 ,file);
     fread(&bright, sizeof(double) , 1 ,file);
-    arr[i][0] = x;
-    arr[i][1] = y;
-    arr[i][2] = mass;
-    arr[i][3] = vx;
-    arr[i][4] = vy;
-    arr[i][5] = bright;
+    arr[i][0] = (float) x;
+    arr[i][1] = (float) y;
+    arr[i][2] = (float) mass;
+    arr[i][3] = (float) vx;
+    arr[i][4] = (float) vy;
+    arr[i][5] = (float) bright;
   }
   fclose(file);
   //find powers of two so we only have to do it once
   const int K=200;
-  double pow_2[K];
+  float pow_2[K];
   pow_2[0]=1.0;
   for(int i=1; i< K; i++)
     pow_2[i]= pow_2[i-1]/2;
