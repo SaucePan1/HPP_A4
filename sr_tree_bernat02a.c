@@ -416,12 +416,19 @@ int main(int argc, char *args[]){
 // print_struct(n,galaxy);
 
 for (int j=0; j<N; j++){
-  fwrite(&arr[j][0], sizeof(double), 1, fout);
-  fwrite(&arr[j][1],  sizeof(double), 1, fout);
-  fwrite(&arr[j][2] ,  sizeof(double), 1, fout);
-  fwrite(&arr[j][3] , sizeof(double), 1, fout);
-  fwrite(&arr[j][4],  sizeof(double), 1, fout);
-  fwrite(&arr[j][5] ,  sizeof(double), 1, fout);
+  double x , y , vx , vy , mass , bright;
+  x = (double)arr[i][0];
+  y = (double)arr[i][1];
+  mass = (double)arr[i][2];
+  vx = (double)arr[i][3];
+  vy = (double)arr[i][4];
+  bright = (double)arr[i][5];
+  fwrite(&x, sizeof(double), 1, fout);
+  fwrite(&y,  sizeof(double), 1, fout);
+  fwrite(&mass ,  sizeof(double), 1, fout);
+  fwrite(&vx , sizeof(double), 1, fout);
+  fwrite(&vy,  sizeof(double), 1, fout);
+  fwrite(& bright,  sizeof(double), 1, fout);
 }
 
 // print_file(N, fout);
