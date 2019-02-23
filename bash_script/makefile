@@ -15,6 +15,10 @@ generate_with_ffast_math:${argument}
 generate_with_ffast_native:${argument}
 	@gcc $(CFLAGS) -O3 -ffast-math -march=native -o ffast_native ${argument} $(LDFLAGS)
 
+generate_with_ffast_msse4:${argument}
+	@gcc $(CFLAGS) -O3 -ffast-math -msse4.2 -o ffast_native ${argument} $(LDFLAGS)
+
+
 clean:
 	@rm -f first_optimization
 	@rm -f second_optimization
