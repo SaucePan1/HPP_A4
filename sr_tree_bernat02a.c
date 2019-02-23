@@ -257,7 +257,7 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
     /*calculate distance from prt i to cm */
     double x_direction = pos_x - (*node)->cm_x;
     double y_direction = pos_y - (*node)->cm_y;
-    double dist_to_node = sqrt(x_direction*x_direction + y_direction*y_direction);
+    double dist_to_node = sqrtf(x_direction*x_direction + y_direction*y_direction);
     //THIS NEEDS TO GO HUGE PERFOMANCE HIT PROBABLY
     //FIND THE PARTICLE AND DELETE IT
     double tol= 1.0e-10; //
@@ -277,7 +277,7 @@ void get_acc_on_body(double pos_x, double pos_y, node_t ** node, double theta_ma
     //otherwise we go deeper
     double x_direction = pos_x - (*node)->cm_x;
     double y_direction = pos_y - (*node)->cm_y;
-    double dist_to_node = sqrt(x_direction*x_direction + y_direction*y_direction);
+    double dist_to_node = sqrtf(x_direction*x_direction + y_direction*y_direction);
     double theta = (*node)->width/dist_to_node;
 
     if(theta< theta_max){
