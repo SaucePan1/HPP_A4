@@ -417,12 +417,12 @@ int main(int argc, char *args[]){
 
 for (int j=0; j<N; j++){
   double x , y , vx , vy , mass , bright;
-  x = (double)arr[i][0];
-  y = (double)arr[i][1];
-  mass = (double)arr[i][2];
-  vx = (double)arr[i][3];
-  vy = (double)arr[i][4];
-  bright = (double)arr[i][5];
+  x = (double)arr[j][0];
+  y = (double)arr[j][1];
+  mass = (double)arr[j][2];
+  vx = (double)arr[j][3];
+  vy = (double)arr[j][4];
+  bright = (double)arr[j][5];
   fwrite(&x, sizeof(double), 1, fout);
   fwrite(&y,  sizeof(double), 1, fout);
   fwrite(&mass ,  sizeof(double), 1, fout);
