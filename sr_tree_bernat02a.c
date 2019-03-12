@@ -406,19 +406,19 @@ int main(int argc, char *args[]){
 
   }
 
-  //Read the file with initial conditions
-  FILE *file;
-  file = fopen(file_name , "rb");
+  //Read the file with initial condition
+  FILE* fmass;
+  fmass = fopen(file_name , "rb");
   /*maybe in this case we could allocate memory for this
   matrix statically*/
-  double *mass = (double **)malloc(N*sizeof(double));
+  double *mass = (double *)malloc(N*sizeof(double));
 
   for (int i = 0 ; i<(N) ; i++){
     double m;
-    fread(&m , sizeof(double) , 1 ,file);
+    fread(&m , sizeof(double) , 1 ,fmass);
     mass[i] = m;
   }
-  fclose(file);
+  fclose(fmass);
 
 
   FILE * fout = fopen("result.gal", "w+");          //check succesful creation/opening of results file
@@ -430,15 +430,15 @@ int main(int argc, char *args[]){
 // print_struct(n,galaxy);
 
 for (int j=0; j<N; j++){
-  double x , y , vx , vy , mass , bright;
-  x = (double)arr[i][0];
-  y = (double)arr[i][1];
-  vx = (double)arr[i][3];
-  vy = (double)arr[i][4];
-  bright = (double)arr[i][5];
+  double x , y , vx , vy, bright;
+  x = (double)arr[j][0];
+  y = (double)arr[j][1];
+  vx = (double)arr[j][3];
+  vy = (double)arr[j][4];
+  bright = (double)arr[j][5];
   fwrite(&x, sizeof(double), 1, fout);
   fwrite(&y,  sizeof(double), 1, fout);
-  fwrite(&mass[i] ,  sizeof(double), 1, fout);
+  fwrite(&mass[j] ,  sizeof(double), 1, fout);
   fwrite(&vx , sizeof(double), 1, fout);
   fwrite(&vy,  sizeof(double), 1, fout);
   fwrite(& bright,  sizeof(double), 1, fout);
